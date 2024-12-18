@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Gem Collector Game</title>
+
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-size: 1.2rem;
+    }
+ 
+  
+    /* Money Container Styling */
+    .money-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+      background: #161b22;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+.money-display.animate {
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+ 
+    .money-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+ 
+    .crypto-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+ 
+    /* Grid Styling */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 100px);
+      grid-template-rows: repeat(5, 100px);
+      gap: 10px;
+      margin: 20px 0;
+      position: relative;
+      background-color: #21262d;
+      padding: 10px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+ 
+    .grid-item {
+      background-color: #30363d;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.5s ease;
+      user-select: none;
+      transform-style: preserve-3d; /* Required for 3D flip effect */
+      perspective: 1000px; /* Allow for 3D effect */
+    }
+ 
+
+     /* Updated Reveal Animation */
+  .grid-item.revealed {
+    animation: fade-scale 0.4s ease-out forwards; /* Smooth and clean */
+    cursor: default;
+  }
+
+  @keyframes fade-scale {
+    0% {
+      opacity: 0;            /* Start invisible */
+      transform: scale(0.9); /* Start slightly smaller */
+    }
+    100% {
+      opacity: 1;            /* Fully visible */
+      transform: scale(1);   /* Back to normal size */
+    }
+  }
+
+  /* Bomb Shake Effect */
+  .grid-item.bomb-hit {
+    animation: shake 0.4s ease-out;
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px);
+    }
+    50% {
+      transform: translateX(3px);
+    }
+    75% {
+      transform: translateX(-3px);
+    }
+  }
+    .grid-item.gem {
+      background-color: #1c1f26;
+    }
+ 
+    .grid-item.bomb {
+      background-color: #1c1f26;
+    }
+ 
+    .grid-item.dimmed {
+      opacity: 0.4;
+    }
+ 
+    .button {
+      padding: 15px;
+      width: 200px;
+      background-color: #238636;
+      color: #fff;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+ 
+    .button:hover {
+      background-color: #2ea043;
+    }
+ 
+    .button:active {
+      background-color: #1e7e34;
+    }
+ 
+    /* Normal bomb appearance (no special background) */
+    .grid-item.bomb-hit {
+      background-color: #1c1f26;  /* Same dark background as the gem */
+      opacity: 1 !important;  /* Ensure it stays fully visible */
+    }
+ 
+    .grid-item.bomb-hit img {
+      filter: none; /* Ensure the bomb image is in full color */
+    }
+ 
+    /* Flip animation when revealing tiles */
+    .grid-item.flip {
+      animation: flip 0.5s ease-in-out;
+    }
+ 
+    @keyframes flip {
+      0% {
+        transform: rotateY(0deg);
+      }
+      50% {
+        transform: rotateY(180deg);
+      }
+      100% {
+        transform: rotateY(360deg);
+      }
+    }
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0; /* Start invisible */
+    transform: scale(0.8); /* Start slightly smaller */
+  }
+  100% {
+    opacity: 1; /* Fully visible */
+    transform: scale(1); /* Normal size */
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards; /* Smooth fade-in effect */
+}
+
+
+
+ 
+    /* General grid item reveal */
+    .grid-item.revealed {
+      cursor: default;
+      transform: rotateY(0deg);  /* Ensure it ends up facing the front */
+    }
+ 
+    .grid-item {
+      background-color: #30363d;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.5s ease;
+      user-select: none;
+      transform-style: preserve-3d; /* Required for 3D flip effect */
+      perspective: 1000px; /* Allow for 3D effect */
+    }
+ 
+    .grid-item img {
+      width: 70px;
+      height: 70px;
+    }
+ 
+    .grid-item.pulse {
+      animation: pulse 0.2s;
+    }
+ 
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+  0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Money Counter and Dropdown -->
+  <div class="money-container">
+    <div class="money-display">$<span id="money">0.00</span></div>
+    <img src="ltc.png" alt="LTC Icon" class="crypto-icon">
+  </div>
+ 
+  <!-- Game Grid and Controls -->
+  <div class="grid-container"></div>
+ 
+ 
+<script>
+// Function to play a sound effect
+function playSound(src) {
+  const sound = new Audio(src);
+  sound.play();
+}
+
+// Function to generate a random balance between 5.00 and 50.00
+function generateRandomBalance() {
+  const min = 5.00;
+  const max = 50.00;
+  const randomBalance = Math.random() * (max - min) + min;
+  return randomBalance.toFixed(2); // Returns as a string with 2 decimals
+}
+
+// Set the starting balance to a random value between 5.00 and 50.00
+let money = parseFloat(generateRandomBalance());
+let score = 0;
+let gameOver = false;
+let cooldown = false; // Cooldown flag
+
+function formatMoney(amount) {
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function updateMoneyDisplay() {
+  document.getElementById("money").textContent = formatMoney(money);
+}
+
+// Call updateMoneyDisplay to show the initial random balance
+updateMoneyDisplay();
+
+const totalTiles = 25;
+const bombCount = 3;
+const tiles = Array(totalTiles).fill('gem');
+for (let i = 0; i < bombCount; i++) {
+  tiles[i] = 'bomb';
+}
+tiles.sort(() => Math.random() - 0.5);
+
+const gridContainer = document.querySelector('.grid-container');
+
+tiles.forEach((type, index) => {
+  const tile = document.createElement('div');
+  tile.classList.add('grid-item');
+  tile.dataset.type = type;
+  tile.dataset.index = index;
+
+  tile.addEventListener('click', () => {
+    if (gameOver || tile.classList.contains('revealed') || cooldown) return; // Prevent click if game is over or tile is revealed or cooldown is active
+    cooldown = true; // Set cooldown flag
+    setTimeout(() => { cooldown = false; }, 200); // Reset cooldown after 500ms
+
+    tile.classList.add('pulse');
+    setTimeout(() => {
+      tile.classList.remove('pulse');
+      tile.classList.add('revealed');
+
+      // Check if the tile already has an image to prevent duplicates
+      if (!tile.querySelector('img')) {
+        if (type === 'gem') {
+          playSound('gemmp3'); // Play gem sound
+          tile.classList.add('gem');
+          const gemImg = document.createElement('img');
+          gemImg.src = 'gem.svg';
+          gemImg.alt = 'Gem';
+          gemImg.draggable = false; // Prevent dragging
+          tile.appendChild(gemImg);
+          score++;
+        } else if (type === 'bomb') {
+          playSound('bombmp3'); // Play bomb sound
+          tile.classList.add('bomb');
+          const bombImg = document.createElement('img');
+          bombImg.src = 'bomb.svg';
+          bombImg.alt = 'Bomb';
+          bombImg.draggable = false; // Prevent dragging
+          tile.appendChild(bombImg);
+          tile.classList.add('bomb-hit'); // Keep bomb background the same as gem
+          endGame(tile);  // End the game after the bomb is hit
+        }
+      }
+
+      document.getElementById('score').textContent = `Score: ${score}`;
+    }, 200);
+  });
+
+  gridContainer.appendChild(tile);
+});
+
+function endGame(bombTile) {
+  gameOver = true;
+  bombTile.textContent = '';
+  const bombImg = document.createElement('img');
+  bombImg.src = 'bomb.svg';
+  bombImg.alt = 'Bomb';
+  bombImg.draggable = false;
+  bombTile.appendChild(bombImg);
+  setTimeout(() => revealAllTiles(), 1500);
+}
+
+function revealAllTiles() {
+  const allTiles = document.querySelectorAll('.grid-item');
+  allTiles.forEach((tile) => {
+    if (!tile.classList.contains('revealed')) {
+      setTimeout(() => {
+        // Reveal all tiles with a flip animation
+        tile.classList.add('revealed');
+        tile.classList.add('flip');
+
+        // Apply the same darker background to all tiles
+        tile.style.backgroundColor = '#1c1f26';
+      }, 100);
+
+      // Add icons if not already present
+      if (!tile.querySelector('img')) {
+        const img = document.createElement('img');
+        img.draggable = false;
+
+        if (tile.dataset.type === 'gem') {
+          img.src = 'gem.svg';
+          img.alt = 'Gem';
+        } else if (tile.dataset.type === 'bomb') {
+          img.src = 'bomb.svg';
+          img.alt = 'Bomb';
+        }
+
+        tile.appendChild(img);
+      }
+
+      // Make unselected icons smaller and semi-transparent
+      const icon = tile.querySelector('img');
+      if (icon && !tile.classList.contains('revealed')) {
+        icon.style.width = '50px'; // Smaller icon size
+        icon.style.height = '50px';
+        icon.style.opacity = '0.5'; // Semi-transparent
+      }
+    }
+  });
+}
+</script>
+
+</body>
+</html>
+ 
+
+
