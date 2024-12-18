@@ -15,34 +15,37 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
         h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
+            font-size: 48px;
+            margin-bottom: 30px;
         }
 
         #player-info {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-size: 20px;
         }
 
         input[type="number"] {
-            padding: 5px;
-            font-size: 16px;
-            margin-right: 10px;
-            width: 100px;
+            padding: 10px;
+            font-size: 18px;
+            margin-right: 20px;
+            width: 120px;
         }
 
         button {
-            padding: 10px;
+            padding: 15px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
-            margin: 5px;
+            margin: 10px;
+            min-width: 150px;
+            border-radius: 5px;
         }
 
         button:disabled {
@@ -53,7 +56,7 @@
         #cards-display {
             display: flex;
             justify-content: space-around;
-            margin-top: 20px;
+            margin-top: 40px;
         }
 
         #player-cards, #dealer-cards {
@@ -61,13 +64,28 @@
             text-align: left;
         }
 
-        #restart {
-            margin-top: 20px;
+        .card {
+            display: inline-block;
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            margin: 5px;
+            font-size: 30px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         #game-status {
-            margin-top: 10px;
-            font-size: 20px;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        #restart {
+            margin-top: 40px;
+        }
+
+        #restart-button {
+            display: none;
         }
 
     </style>
@@ -107,7 +125,7 @@
         </div>
 
         <div id="restart">
-            <button id="restart-button" style="display:none;">Play Again</button>
+            <button id="restart-button">Play Again</button>
         </div>
     </div>
 
