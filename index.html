@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <title>Gem Collector Game</title>
 
   <style>
@@ -57,19 +56,21 @@
     .bet-container {
       position: absolute;
       left: 20px;
-      top: 20px;
+      top: 100px; /* Moved the bet section further down */
       background: #161b22;
-      padding: 10px 20px;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       display: flex;
+      flex-direction: column;
       align-items: center;
+      gap: 20px;
     }
 
     .bet-display {
       font-size: 1.5rem;
       font-weight: bold;
-      margin-right: 10px;
+      margin-bottom: 10px;
     }
 
     .bet-button {
@@ -88,6 +89,17 @@
 
     .bet-button:active {
       background-color: #1e7e34;
+    }
+
+    .bet-dropdown {
+      padding: 10px;
+      font-size: 1rem;
+      background-color: #2d333b;
+      color: #c9d1d9;
+      border: none;
+      border-radius: 5px;
+      width: 100px;
+      text-align: center;
     }
 
     /* Grid Styling */
@@ -238,6 +250,36 @@
   <!-- Betting Section -->
   <div class="bet-container">
     <div class="bet-display">Bet: $<span id="betAmount">0.00</span></div>
+    
+    <!-- Number of Mines Dropdown -->
+    <select id="minesDropdown" class="bet-dropdown">
+      <option value="1">1 Mine</option>
+      <option value="2">2 Mines</option>
+      <option value="3">3 Mines</option>
+      <option value="4">4 Mines</option>
+      <option value="5">5 Mines</option>
+      <option value="6">6 Mines</option>
+      <option value="7">7 Mines</option>
+      <option value="8">8 Mines</option>
+      <option value="9">9 Mines</option>
+      <option value="10">10 Mines</option>
+      <option value="11">11 Mines</option>
+      <option value="12">12 Mines</option>
+      <option value="13">13 Mines</option>
+      <option value="14">14 Mines</option>
+      <option value="15">15 Mines</option>
+      <option value="16">16 Mines</option>
+      <option value="17">17 Mines</option>
+      <option value="18">18 Mines</option>
+      <option value="19">19 Mines</option>
+      <option value="20">20 Mines</option>
+      <option value="21">21 Mines</option>
+      <option value="22">22 Mines</option>
+      <option value="23">23 Mines</option>
+      <option value="24">24 Mines</option>
+    </select>
+    
+    <!-- Place Bet Button -->
     <button class="bet-button" onclick="placeBet()">Place Bet</button>
   </div>
 
@@ -276,10 +318,14 @@
     function placeBet() {
       const betAmount = prompt("Enter your bet amount (must be a positive number and less than or equal to your balance):");
       const bet = parseFloat(betAmount);
+      const numMines = parseInt(document.getElementById("minesDropdown").value);
+
       if (bet > 0 && bet <= money) {
         money -= bet;
         updateMoneyDisplay();
         document.getElementById("betAmount").textContent = formatMoney(bet);
+        // Update the grid with the selected number of mines
+        setupGame(numMines);
       } else {
         alert("Invalid bet amount.");
       }
@@ -288,62 +334,66 @@
     // Call updateMoneyDisplay to show the initial random balance
     updateMoneyDisplay();
 
-    const totalTiles = 25;
-    const bombCount = 3;
-    const tiles = Array(totalTiles).fill('gem');
-    for (let i = 0; i < bombCount; i++) {
-      tiles[i] = 'bomb';
-    }
-    tiles.sort(() => Math.random() - 0.5);
+    function setupGame(numMines) {
+      gameOver = false;
+      score = 0;
+      const totalTiles = 25;
+      const tiles = Array(totalTiles).fill('gem');
+      for (let i = 0; i < numMines; i++) {
+        tiles[i] = 'bomb';
+      }
+      tiles.sort(() => Math.random() - 0.5);
 
-    const gridContainer = document.querySelector('.grid-container');
+      const gridContainer = document.querySelector('.grid-container');
+      gridContainer.innerHTML = ''; // Clear the grid before setting it up
 
-    tiles.forEach((type, index) => {
-      const tile = document.createElement('div');
-      tile.classList.add('grid-item');
-      tile.dataset.type = type;
-      tile.dataset.index = index;
+      tiles.forEach((type, index) => {
+        const tile = document.createElement('div');
+        tile.classList.add('grid-item');
+        tile.dataset.type = type;
+        tile.dataset.index = index;
 
-      tile.addEventListener('click', () => {
-        if (gameOver || tile.classList.contains('revealed') || cooldown) return; // Prevent click if game is over or tile is revealed or cooldown is active
-        cooldown = true; // Set cooldown flag
-        setTimeout(() => { cooldown = false; }, 200); // Reset cooldown after 200ms
+        tile.addEventListener('click', () => {
+          if (gameOver || tile.classList.contains('revealed') || cooldown) return; // Prevent click if game is over or tile is revealed or cooldown is active
+          cooldown = true; // Set cooldown flag
+          setTimeout(() => { cooldown = false; }, 200); // Reset cooldown after 200ms
 
-        tile.classList.add('pulse');
-        setTimeout(() => {
-          tile.classList.remove('pulse');
-          tile.classList.add('revealed');
+          tile.classList.add('pulse');
+          setTimeout(() => {
+            tile.classList.remove('pulse');
+            tile.classList.add('revealed');
 
-          // Check if the tile already has an image to prevent duplicates
-          if (!tile.querySelector('img')) {
-            if (type === 'gem') {
-              playSound('gemmp3'); // Play gem sound
-              tile.classList.add('gem');
-              const gemImg = document.createElement('img');
-              gemImg.src = 'gem.svg';
-              gemImg.alt = 'Gem';
-              gemImg.draggable = false; // Prevent dragging
-              tile.appendChild(gemImg);
-              score++;
-            } else if (type === 'bomb') {
-              playSound('bombmp3'); // Play bomb sound
-              tile.classList.add('bomb');
-              const bombImg = document.createElement('img');
-              bombImg.src = 'bomb.svg';
-              bombImg.alt = 'Bomb';
-              bombImg.draggable = false; // Prevent dragging
-              tile.appendChild(bombImg);
-              tile.classList.add('bomb-hit'); // Keep bomb background the same as gem
-              endGame(tile);  // End the game after the bomb is hit
+            // Check if the tile already has an image to prevent duplicates
+            if (!tile.querySelector('img')) {
+              if (type === 'gem') {
+                playSound('gemmp3'); // Play gem sound
+                tile.classList.add('gem');
+                const gemImg = document.createElement('img');
+                gemImg.src = 'gem.svg';
+                gemImg.alt = 'Gem';
+                gemImg.draggable = false; // Prevent dragging
+                tile.appendChild(gemImg);
+                score++;
+              } else if (type === 'bomb') {
+                playSound('bombmp3'); // Play bomb sound
+                tile.classList.add('bomb');
+                const bombImg = document.createElement('img');
+                bombImg.src = 'bomb.svg';
+                bombImg.alt = 'Bomb';
+                bombImg.draggable = false; // Prevent dragging
+                tile.appendChild(bombImg);
+                tile.classList.add('bomb-hit'); // Keep bomb background the same as gem
+                endGame(tile);  // End the game after the bomb is hit
+              }
             }
-          }
 
-          document.getElementById('score').textContent = `Score: ${score}`;
-        }, 200);
+            document.getElementById('score').textContent = `Score: ${score}`;
+          }, 200);
+        });
+
+        gridContainer.appendChild(tile);
       });
-
-      gridContainer.appendChild(tile);
-    });
+    }
 
     function endGame(bombTile) {
       gameOver = true;
