@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Gem Collector Game</title>
 
   <style>
@@ -18,9 +19,9 @@
       justify-content: center;
       height: 100vh;
       font-size: 1.2rem;
-      position: relative;
     }
-
+ 
+  
     /* Money Container Styling */
     .money-container {
       display: flex;
@@ -32,76 +33,28 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
-    .money-display.animate {
-      animation: bounce 0.5s ease;
-    }
+.money-display.animate {
+  animation: bounce 0.5s ease;
+}
 
-    @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-    }
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
 
+ 
     .money-display {
       font-size: 1.5rem;
       font-weight: bold;
       margin-right: 10px;
     }
-
+ 
     .crypto-icon {
       width: 30px;
       height: 30px;
     }
 
-    /* Betting Section Styling */
-    .bet-container {
-      position: absolute;
-      left: 20px;
-      top: 100px; /* Moved the bet section further down */
-      background: #161b22;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .bet-display {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .bet-button {
-      padding: 10px 15px;
-      background-color: #238636;
-      color: #fff;
-      font-size: 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .bet-button:hover {
-      background-color: #2ea043;
-    }
-
-    .bet-button:active {
-      background-color: #1e7e34;
-    }
-
-    .bet-dropdown {
-      padding: 10px;
-      font-size: 1rem;
-      background-color: #2d333b;
-      color: #c9d1d9;
-      border: none;
-      border-radius: 5px;
-      width: 100px;
-      text-align: center;
-    }
-
+ 
     /* Grid Styling */
     .grid-container {
       display: grid;
@@ -115,9 +68,8 @@
       border-radius: 10px;
       transition: background-color 0.3s ease;
       user-select: none;
-      margin-left: 150px; /* Move grid to the right to make room for the bet section */
     }
-
+ 
     .grid-item {
       background-color: #30363d;
       border-radius: 10px;
@@ -131,57 +83,59 @@
       position: relative;
       transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.5s ease;
       user-select: none;
-      transform-style: preserve-3d;
-      perspective: 1000px;
+      transform-style: preserve-3d; /* Required for 3D flip effect */
+      perspective: 1000px; /* Allow for 3D effect */
     }
+ 
 
-    .grid-item.revealed {
-      animation: fade-scale 0.4s ease-out forwards;
-      cursor: default;
+     /* Updated Reveal Animation */
+  .grid-item.revealed {
+    animation: fade-scale 0.4s ease-out forwards; /* Smooth and clean */
+    cursor: default;
+  }
+
+  @keyframes fade-scale {
+    0% {
+      opacity: 0;            /* Start invisible */
+      transform: scale(0.9); /* Start slightly smaller */
     }
-
-    @keyframes fade-scale {
-      0% {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
+    100% {
+      opacity: 1;            /* Fully visible */
+      transform: scale(1);   /* Back to normal size */
     }
+  }
 
-    .grid-item.bomb-hit {
-      animation: shake 0.4s ease-out;
+  /* Bomb Shake Effect */
+  .grid-item.bomb-hit {
+    animation: shake 0.4s ease-out;
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
     }
-
-    @keyframes shake {
-      0%, 100% {
-        transform: translateX(0);
-      }
-      25% {
-        transform: translateX(-3px);
-      }
-      50% {
-        transform: translateX(3px);
-      }
-      75% {
-        transform: translateX(-3px);
-      }
+    25% {
+      transform: translateX(-3px);
     }
-
+    50% {
+      transform: translateX(3px);
+    }
+    75% {
+      transform: translateX(-3px);
+    }
+  }
     .grid-item.gem {
       background-color: #1c1f26;
     }
-
+ 
     .grid-item.bomb {
       background-color: #1c1f26;
     }
-
+ 
     .grid-item.dimmed {
       opacity: 0.4;
     }
-
+ 
     .button {
       padding: 15px;
       width: 200px;
@@ -192,20 +146,30 @@
       border-radius: 10px;
       cursor: pointer;
     }
-
+ 
     .button:hover {
       background-color: #2ea043;
     }
-
+ 
     .button:active {
       background-color: #1e7e34;
     }
-
+ 
+    /* Normal bomb appearance (no special background) */
+    .grid-item.bomb-hit {
+      background-color: #1c1f26;  /* Same dark background as the gem */
+      opacity: 1 !important;  /* Ensure it stays fully visible */
+    }
+ 
+    .grid-item.bomb-hit img {
+      filter: none; /* Ensure the bomb image is in full color */
+    }
+ 
     /* Flip animation when revealing tiles */
     .grid-item.flip {
       animation: flip 0.5s ease-in-out;
     }
-
+ 
     @keyframes flip {
       0% {
         transform: rotateY(0deg);
@@ -218,17 +182,67 @@
       }
     }
 
+/* Fade-in Animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0; /* Start invisible */
+    transform: scale(0.8); /* Start slightly smaller */
+  }
+  100% {
+    opacity: 1; /* Fully visible */
+    transform: scale(1); /* Normal size */
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards; /* Smooth fade-in effect */
+}
+
+
+
+ 
+    /* General grid item reveal */
+    .grid-item.revealed {
+      cursor: default;
+      transform: rotateY(0deg);  /* Ensure it ends up facing the front */
+    }
+ 
+    .grid-item {
+      background-color: #30363d;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.5s ease;
+      user-select: none;
+      transform-style: preserve-3d; /* Required for 3D flip effect */
+      perspective: 1000px; /* Allow for 3D effect */
+    }
+ 
     .grid-item img {
       width: 70px;
       height: 70px;
     }
-
+ 
     .grid-item.pulse {
       animation: pulse 0.2s;
     }
-
+ 
     @keyframes pulse {
       0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+  0% {
         transform: scale(1);
       }
       50% {
@@ -246,194 +260,153 @@
     <div class="money-display">$<span id="money">0.00</span></div>
     <img src="ltc.png" alt="LTC Icon" class="crypto-icon">
   </div>
-
-  <!-- Betting Section -->
-  <div class="bet-container">
-    <div class="bet-display">Bet: $<span id="betAmount">0.00</span></div>
-    
-    <!-- Number of Mines Dropdown -->
-    <select id="minesDropdown" class="bet-dropdown">
-      <option value="1">1 Mine</option>
-      <option value="2">2 Mines</option>
-      <option value="3">3 Mines</option>
-      <option value="4">4 Mines</option>
-      <option value="5">5 Mines</option>
-      <option value="6">6 Mines</option>
-      <option value="7">7 Mines</option>
-      <option value="8">8 Mines</option>
-      <option value="9">9 Mines</option>
-      <option value="10">10 Mines</option>
-      <option value="11">11 Mines</option>
-      <option value="12">12 Mines</option>
-      <option value="13">13 Mines</option>
-      <option value="14">14 Mines</option>
-      <option value="15">15 Mines</option>
-      <option value="16">16 Mines</option>
-      <option value="17">17 Mines</option>
-      <option value="18">18 Mines</option>
-      <option value="19">19 Mines</option>
-      <option value="20">20 Mines</option>
-      <option value="21">21 Mines</option>
-      <option value="22">22 Mines</option>
-      <option value="23">23 Mines</option>
-      <option value="24">24 Mines</option>
-    </select>
-    
-    <!-- Place Bet Button -->
-    <button class="bet-button" onclick="placeBet()">Place Bet</button>
-  </div>
-
+ 
   <!-- Game Grid and Controls -->
   <div class="grid-container"></div>
+ 
+ 
+<script>
+// Function to play a sound effect
+function playSound(src) {
+  const sound = new Audio(src);
+  sound.play();
+}
 
-  <script>
-    // Function to play a sound effect
-    function playSound(src) {
-      const sound = new Audio(src);
-      sound.play();
-    }
+// Function to generate a random balance between 5.00 and 50.00
+function generateRandomBalance() {
+  const min = 5.00;
+  const max = 50.00;
+  const randomBalance = Math.random() * (max - min) + min;
+  return randomBalance.toFixed(2); // Returns as a string with 2 decimals
+}
 
-    // Function to generate a random balance between 5.00 and 50.00
-    function generateRandomBalance() {
-      const min = 5.00;
-      const max = 50.00;
-      const randomBalance = Math.random() * (max - min) + min;
-      return randomBalance.toFixed(2); // Returns as a string with 2 decimals
-    }
+// Set the starting balance to a random value between 5.00 and 50.00
+let money = parseFloat(generateRandomBalance());
+let score = 0;
+let gameOver = false;
+let cooldown = false; // Cooldown flag
 
-    // Set the starting balance to a random value between 5.00 and 50.00
-    let money = parseFloat(generateRandomBalance());
-    let score = 0;
-    let gameOver = false;
-    let cooldown = false; // Cooldown flag
+function formatMoney(amount) {
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
-    function formatMoney(amount) {
-      return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
+function updateMoneyDisplay() {
+  document.getElementById("money").textContent = formatMoney(money);
+}
 
-    function updateMoneyDisplay() {
-      document.getElementById("money").textContent = formatMoney(money);
-    }
+// Call updateMoneyDisplay to show the initial random balance
+updateMoneyDisplay();
 
-    function placeBet() {
-      const betAmount = prompt("Enter your bet amount (must be a positive number and less than or equal to your balance):");
-      const bet = parseFloat(betAmount);
-      const numMines = parseInt(document.getElementById("minesDropdown").value);
+const totalTiles = 25;
+const bombCount = 3;
+const tiles = Array(totalTiles).fill('gem');
+for (let i = 0; i < bombCount; i++) {
+  tiles[i] = 'bomb';
+}
+tiles.sort(() => Math.random() - 0.5);
 
-      if (bet > 0 && bet <= money) {
-        money -= bet;
-        updateMoneyDisplay();
-        document.getElementById("betAmount").textContent = formatMoney(bet);
-        // Update the grid with the selected number of mines
-        setupGame(numMines);
-      } else {
-        alert("Invalid bet amount.");
-      }
-    }
+const gridContainer = document.querySelector('.grid-container');
 
-    // Call updateMoneyDisplay to show the initial random balance
-    updateMoneyDisplay();
+tiles.forEach((type, index) => {
+  const tile = document.createElement('div');
+  tile.classList.add('grid-item');
+  tile.dataset.type = type;
+  tile.dataset.index = index;
 
-    function setupGame(numMines) {
-      gameOver = false;
-      score = 0;
-      const totalTiles = 25;
-      const tiles = Array(totalTiles).fill('gem');
-      for (let i = 0; i < numMines; i++) {
-        tiles[i] = 'bomb';
-      }
-      tiles.sort(() => Math.random() - 0.5);
+  tile.addEventListener('click', () => {
+    if (gameOver || tile.classList.contains('revealed') || cooldown) return; // Prevent click if game is over or tile is revealed or cooldown is active
+    cooldown = true; // Set cooldown flag
+    setTimeout(() => { cooldown = false; }, 200); // Reset cooldown after 500ms
 
-      const gridContainer = document.querySelector('.grid-container');
-      gridContainer.innerHTML = ''; // Clear the grid before setting it up
+    tile.classList.add('pulse');
+    setTimeout(() => {
+      tile.classList.remove('pulse');
+      tile.classList.add('revealed');
 
-      tiles.forEach((type, index) => {
-        const tile = document.createElement('div');
-        tile.classList.add('grid-item');
-        tile.dataset.type = type;
-        tile.dataset.index = index;
-
-        tile.addEventListener('click', () => {
-          if (gameOver || tile.classList.contains('revealed') || cooldown) return; // Prevent click if game is over or tile is revealed or cooldown is active
-          cooldown = true; // Set cooldown flag
-          setTimeout(() => { cooldown = false; }, 200); // Reset cooldown after 200ms
-
-          tile.classList.add('pulse');
-          setTimeout(() => {
-            tile.classList.remove('pulse');
-            tile.classList.add('revealed');
-
-            // Check if the tile already has an image to prevent duplicates
-            if (!tile.querySelector('img')) {
-              if (type === 'gem') {
-                playSound('gemmp3'); // Play gem sound
-                tile.classList.add('gem');
-                const gemImg = document.createElement('img');
-                gemImg.src = 'gem.svg';
-                gemImg.alt = 'Gem';
-                gemImg.draggable = false; // Prevent dragging
-                tile.appendChild(gemImg);
-                score++;
-              } else if (type === 'bomb') {
-                playSound('bombmp3'); // Play bomb sound
-                tile.classList.add('bomb');
-                const bombImg = document.createElement('img');
-                bombImg.src = 'bomb.svg';
-                bombImg.alt = 'Bomb';
-                bombImg.draggable = false; // Prevent dragging
-                tile.appendChild(bombImg);
-                tile.classList.add('bomb-hit'); // Keep bomb background the same as gem
-                endGame(tile);  // End the game after the bomb is hit
-              }
-            }
-
-            document.getElementById('score').textContent = `Score: ${score}`;
-          }, 200);
-        });
-
-        gridContainer.appendChild(tile);
-      });
-    }
-
-    function endGame(bombTile) {
-      gameOver = true;
-      bombTile.textContent = '';
-      const bombImg = document.createElement('img');
-      bombImg.src = 'bomb.svg';
-      bombImg.alt = 'Bomb';
-      bombImg.draggable = false;
-      bombTile.appendChild(bombImg);
-      setTimeout(() => revealAllTiles(), 1500);
-    }
-
-    function revealAllTiles() {
-      const allTiles = document.querySelectorAll('.grid-item');
-      allTiles.forEach((tile) => {
-        if (!tile.classList.contains('revealed')) {
-          setTimeout(() => {
-            // Reveal all tiles with a flip animation
-            tile.classList.add('revealed');
-            tile.classList.add('flip');
-            tile.style.backgroundColor = '#1c1f26';
-          }, 100);
-
-          if (!tile.querySelector('img')) {
-            const img = document.createElement('img');
-            img.draggable = false;
-
-            if (tile.dataset.type === 'gem') {
-              img.src = 'gem.svg';
-              img.alt = 'Gem';
-            } else if (tile.dataset.type === 'bomb') {
-              img.src = 'bomb.svg';
-              img.alt = 'Bomb';
-            }
-
-            tile.appendChild(img);
-          }
+      // Check if the tile already has an image to prevent duplicates
+      if (!tile.querySelector('img')) {
+        if (type === 'gem') {
+          playSound('gemmp3'); // Play gem sound
+          tile.classList.add('gem');
+          const gemImg = document.createElement('img');
+          gemImg.src = 'gem.svg';
+          gemImg.alt = 'Gem';
+          gemImg.draggable = false; // Prevent dragging
+          tile.appendChild(gemImg);
+          score++;
+        } else if (type === 'bomb') {
+          playSound('bombmp3'); // Play bomb sound
+          tile.classList.add('bomb');
+          const bombImg = document.createElement('img');
+          bombImg.src = 'bomb.svg';
+          bombImg.alt = 'Bomb';
+          bombImg.draggable = false; // Prevent dragging
+          tile.appendChild(bombImg);
+          tile.classList.add('bomb-hit'); // Keep bomb background the same as gem
+          endGame(tile);  // End the game after the bomb is hit
         }
-      });
+      }
+
+      document.getElementById('score').textContent = Score: ${score};
+    }, 200);
+  });
+
+  gridContainer.appendChild(tile);
+});
+
+function endGame(bombTile) {
+  gameOver = true;
+  bombTile.textContent = '';
+  const bombImg = document.createElement('img');
+  bombImg.src = 'bomb.svg';
+  bombImg.alt = 'Bomb';
+  bombImg.draggable = false;
+  bombTile.appendChild(bombImg);
+  setTimeout(() => revealAllTiles(), 1500);
+}
+
+function revealAllTiles() {
+  const allTiles = document.querySelectorAll('.grid-item');
+  allTiles.forEach((tile) => {
+    if (!tile.classList.contains('revealed')) {
+      setTimeout(() => {
+        // Reveal all tiles with a flip animation
+        tile.classList.add('revealed');
+        tile.classList.add('flip');
+
+        // Apply the same darker background to all tiles
+        tile.style.backgroundColor = '#1c1f26';
+      }, 100);
+
+      // Add icons if not already present
+      if (!tile.querySelector('img')) {
+        const img = document.createElement('img');
+        img.draggable = false;
+
+        if (tile.dataset.type === 'gem') {
+          img.src = 'gem.svg';
+          img.alt = 'Gem';
+        } else if (tile.dataset.type === 'bomb') {
+          img.src = 'bomb.svg';
+          img.alt = 'Bomb';
+        }
+
+        tile.appendChild(img);
+      }
+
+      // Make unselected icons smaller and semi-transparent
+      const icon = tile.querySelector('img');
+      if (icon && !tile.classList.contains('revealed')) {
+        icon.style.width = '50px'; // Smaller icon size
+        icon.style.height = '50px';
+        icon.style.opacity = '0.5'; // Semi-transparent
+      }
     }
-  </script>
+  });
+}
+</script>
+
 </body>
 </html>
+ 
+
