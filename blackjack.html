@@ -6,22 +6,25 @@
     <title>Blackjack Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #2f4f4f;
+            font-family: 'Arial', sans-serif;
+            background-color: #1e2a47;
             color: #fff;
             text-align: center;
             margin: 0;
-            padding: 20px;
+            padding: 30px;
+            overflow: hidden;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         h1 {
-            font-size: 48px;
-            margin-bottom: 30px;
+            font-size: 56px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
 
         #player-info {
@@ -30,26 +33,34 @@
         }
 
         input[type="number"] {
-            padding: 10px;
-            font-size: 18px;
+            padding: 12px;
+            font-size: 20px;
             margin-right: 20px;
-            width: 120px;
+            width: 150px;
+            border-radius: 8px;
+            border: none;
+            background-color: #fff;
+            color: #333;
         }
 
         button {
-            padding: 15px;
+            padding: 12px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            margin: 10px;
-            min-width: 150px;
-            border-radius: 5px;
+            margin: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
 
         button:disabled {
-            background-color: #ccc;
+            background-color: #bbb;
             cursor: not-allowed;
         }
 
@@ -57,35 +68,75 @@
             display: flex;
             justify-content: space-around;
             margin-top: 40px;
+            flex-wrap: wrap;
         }
 
         #player-cards, #dealer-cards {
             width: 45%;
-            text-align: left;
+            text-align: center;
+            margin-top: 20px;
         }
 
         .card {
             display: inline-block;
             background-color: #fff;
             color: #000;
-            padding: 20px;
+            font-size: 32px;
+            padding: 30px;
+            margin: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.1);
+        }
+
+        .chip {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f4b400;
+            display: inline-block;
             margin: 5px;
-            font-size: 30px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            line-height: 40px;
+            font-size: 18px;
+            color: #fff;
+            font-weight: bold;
         }
 
         #game-status {
             margin-top: 20px;
             font-size: 24px;
-        }
-
-        #restart {
-            margin-top: 40px;
+            color: #ffcc00;
+            font-weight: bold;
         }
 
         #restart-button {
             display: none;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #2196F3;
+            color: white;
+            font-size: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #restart-button:hover {
+            background-color: #1976D2;
+        }
+
+        .chips-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .chips-container span {
+            font-size: 28px;
+            color: #ffcc00;
+            font-weight: bold;
         }
 
     </style>
@@ -96,7 +147,10 @@
         
         <!-- Display player chips -->
         <div id="player-info">
-            <span>Chips: $<span id="chips">100</span></span>
+            <span>Chips: </span>
+            <div class="chips-container">
+                <span id="chips">100</span>
+            </div>
             <input type="number" id="bet" placeholder="Enter Bet" min="1" />
             <button id="place-bet">Place Bet</button>
         </div>
