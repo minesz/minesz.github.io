@@ -86,7 +86,8 @@
             margin: 15px;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease-in-out;
+            transform: scale(0);
+            animation: cardIn 0.5s forwards;
         }
 
         .card:hover {
@@ -139,6 +140,42 @@
             font-weight: bold;
         }
 
+        .chip-stack {
+            display: inline-block;
+            margin: 10px;
+            position: relative;
+        }
+
+        .chip-stack .chip {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .chip-stack .chip:nth-child(2) {
+            top: 12px;
+            left: 12px;
+        }
+
+        .chip-stack .chip:nth-child(3) {
+            top: 24px;
+            left: 24px;
+        }
+
+        .chip-stack .chip:nth-child(4) {
+            top: 36px;
+            left: 36px;
+        }
+
+        @keyframes cardIn {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -149,15 +186,22 @@
         <div id="player-info">
             <span>Chips: </span>
             <div class="chips-container">
-                <span id="chips">100</span>
+                <div class="chip-stack">
+                    <div class="chip">10</div>
+                    <div class="chip">10</div>
+                    <div class="chip">10</div>
+                    <div class="chip">10</div>
+                </div>
             </div>
             <input type="number" id="bet" placeholder="Enter Bet" min="1" />
             <button id="place-bet">Place Bet</button>
         </div>
 
-        <!-- Display game status -->
+        <!-- Display total value of cards -->
         <div id="game-status">
             <span id="status-message"></span>
+            <div id="player-total">Your total: 0</div>
+            <div id="dealer-total">Dealer's total: ?</div>
         </div>
 
         <!-- Player and dealer cards -->
@@ -193,6 +237,8 @@
         const hitButton = document.getElementById("hit");
         const standButton = document.getElementById("stand");
         const statusMessage = document.getElementById("status-message");
+        const playerTotal = document.getElementById("player-total");
+        const dealerTotal = document.getElementById("dealer-total");
         const restartButton = document.getElementById("restart-button");
 
         // Initialize deck of cards
@@ -271,14 +317,23 @@
             betInput.disabled = true;
 
             statusMessage.textContent = "Your turn.";
+            updateTotals();
+        }
+
+        // Update card totals
+        function updateTotals() {
+            const playerValue = getHandValue(playerHand);
+            playerTotal.textContent = `Your total: ${playerValue}`;
+            dealerTotal.textContent = `Dealer's total: ?`;
         }
 
         // Handle player hit action
         function hit() {
             playerHand.push(dealCard());
             displayCards(playerCardsContainer, playerHand);
-
             const playerValue = getHandValue(playerHand);
+            updateTotals();
+
             if (playerValue > 21) {
                 statusMessage.textContent = "You bust! Dealer wins.";
                 endGame();
@@ -291,7 +346,6 @@
                 dealerHand.push(dealCard());
             }
             displayCards(dealerCardsContainer, dealerHand);
-
             const playerValue = getHandValue(playerHand);
             const dealerValue = getHandValue(dealerHand);
 
@@ -328,6 +382,8 @@
             placeBetButton.disabled = false;
             betInput.disabled = false;
             chipsDisplay.textContent = playerChips;
+            playerTotal.textContent = 'Your total: 0';
+            dealerTotal.textContent = "Dealer's total: ?";
         }
 
         // Place a bet
